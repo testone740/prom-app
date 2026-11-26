@@ -1,0 +1,5 @@
+# https://github.com/github/gitignore/blob/main/Node.gitignore
+
+# Dependency directories
+node_modules/
+
