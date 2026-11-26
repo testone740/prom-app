@@ -11,7 +11,7 @@ const PORT = process.env.PORT || 3000;
 //   timeout: 5000,
 // });
 
-// Custom Metrics Collection
+// Collect custom metrics
 const httpRequestCounter = new promClient.Counter({
   name: 'http_requests_total',
   help: 'Total number of HTTP requests',
@@ -20,16 +20,12 @@ const httpRequestCounter = new promClient.Counter({
 
 // Middleware to track requests
 app.use((req, res, next) => {
-  console.log('===> Request path:', req.path);
-  console.log('===> Response code:', res.statusCode);
-
-  httpRequestCounter.labels(req.method, req.path, res.statusCode).inc(1);
-
-  // res.on('finish', () => {
-  //   console.log('===> Response code:', res.statusCode);
-  //   httpRequestCounter.labels(req.method, req.path, res.statusCode).inc(1);
-  //   console.log('\n');
-  // });
+  res.on('finish', () => {
+    console.log('===> Request path:', req.path);
+    console.log('===> Response code:', res.statusCode);
+    httpRequestCounter.labels(req.method, req.path, res.statusCode).inc(1);
+    console.log('\n');
+  });
 
   next();
 });
